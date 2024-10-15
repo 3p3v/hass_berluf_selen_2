@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, override
 
-import decimal
-
+from berluf_selen_2.recup.funcs import Heater_cooler
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 
-from .data import Berluf_selen_500_ConfigEntry
-from .defs import LOGGER
-from .entity import Berluf_selen_500_Entry
-
-from .berluf_selen_500.funcs import Heater_cooler
+if TYPE_CHECKING:
+    from .data import SelenConfigEntry
+from .entity import SelenEntry
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -20,45 +17,54 @@ if TYPE_CHECKING:
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
-    entry: Berluf_selen_500_ConfigEntry,
+    hass: HomeAssistant,
+    entry: SelenConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the select platform."""
     async_add_entities(
         [
-            Berluf_selen_500_heater_cooler(
+            SelenHeaterCooler(
                 entry=entry,
                 entity_description=SelectEntityDescription(
-                    key="berluf_selen_500",
+                    key="berluf_selen_2",
                     name="Selen heater cooler switch",
                     options=Heater_cooler.Mode._member_names_,
-                    # icon="mdi:format-quote-close",
+                    icon="mdi:sun-snowflake-variant",
                 ),
+                hass=hass,
             ),
         ]
     )
 
 
-class Berluf_selen_500_heater_cooler(Berluf_selen_500_Entry, SelectEntity):
-    """berluf_selen_500 heater cooler switch."""
+class SelenHeaterCooler(SelectEntity, SelenEntry, Heater_cooler):
+    """berluf_selen_2 heater cooler switch."""
 
     def __init__(
         self,
-        entry: Berluf_selen_500_ConfigEntry,
+        entry: SelenConfigEntry,
         entity_description: SelectEntityDescription,
+        hass: HomeAssistant,
     ) -> None:
         """Initialize the sensor class."""
-        super().__init__(entry)
+        SelectEntity.__init__(self)
+        SelenEntry.__init__(self, entry)
+        Heater_cooler.__init__(self, entry.runtime_data.get_device())
         self.entity_description = entity_description
 
-        self._impl = Heater_cooler(entry.runtime_data.get_device())
+        self._hass = hass
+
+    @override
+    def _usr_callback(self, val: Heater_cooler.Mode) -> None:
+        self.async_write_ha_state()
 
     @property
     def current_option(self) -> str | None:
         """Return the selected entity option to represent the entity state."""
-        return self._impl.get().name
+        return self.get().name
 
-    def select_option(self, option: str) -> None:
+    @override
+    async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        self._impl.set(Heater_cooler.Mode[option])
+        self.set(Heater_cooler.Mode[option])

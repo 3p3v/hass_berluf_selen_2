@@ -1,5 +1,5 @@
 {
-    "name": "3p3v/berluf_selen_500",
+    "name": "3p3v/hass_berluf_selen_2",
     "image": "mcr.microsoft.com/devcontainers/python:3.12",
     "postCreateCommand": "scripts/setup",
     "forwardPorts": [
