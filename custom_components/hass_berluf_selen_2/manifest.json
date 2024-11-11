@@ -1,0 +1,16 @@
+{
+  "domain": "berluf_selen_2",
+  "name": "Berluf Selen 2",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/3p3v/hass_berluf_selen_2",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/3p3v/hass_berluf_selen_2/issues",
+  "requirements": [
+    "berluf_selen_2==0.1.7",
+    "pyserial==3.5"
+  ],
+  "version": "1.0.0"
+}

@@ -20,6 +20,5 @@ config/*
 #
 *.ipynb
 *.xlsx
-/resources
 /deprecated
 /scripts

@@ -2,65 +2,71 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, override
 
-import decimal
-
+from berluf_selen_2.recup.funcs import GWC
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-
-from .data import Berluf_selen_500_ConfigEntry
-from .defs import LOGGER
-from .entity import Berluf_selen_500_Entry
-
-from .berluf_selen_500.funcs import GWC
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
+if TYPE_CHECKING:
+    from .data import SelenConfigEntry
+from .entity import SelenAsyncEntry
+
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
-    entry: Berluf_selen_500_ConfigEntry,
+    hass: HomeAssistant,
+    entry: SelenConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the switch platform."""
     async_add_entities(
         [
-            Berluf_selen_500_GWC(
+            SelenGWC(
                 entry=entry,
                 entity_description=SwitchEntityDescription(
-                    key="berluf_selen_500",
+                    key="berluf_selen_2",
                     name="Selen GWC switch",
                 ),
+                hass=hass,
             ),
         ]
     )
 
 
-class Berluf_selen_500_GWC(Berluf_selen_500_Entry, SwitchEntity):
-    """berluf_selen_500 heater cooler switch."""
+class SelenGWC(SelenAsyncEntry, SwitchEntity, GWC):
+    """berluf_selen_2 heater cooler switch."""
 
     def __init__(
         self,
-        entry: Berluf_selen_500_ConfigEntry,
+        entry: SelenConfigEntry,
         entity_description: SwitchEntityDescription,
+        hass: HomeAssistant,
     ) -> None:
         """Initialize the sensor class."""
-        super().__init__(entry, "GWC")
+        SwitchEntity.__init__(self)
+        SelenAsyncEntry.__init__(self, entry, "GWC")
+        GWC.__init__(self, entry.runtime_data.get_device())
         self.entity_description = entity_description
+        self._hass = hass
 
-        self._impl = GWC(entry.runtime_data.get_device())
+    @override
+    def _usr_callback(self, val: bool) -> None:
+        self.async_write_ha_state()
 
     @property
     def is_on(self) -> bool:
         """Return true if the switch is on."""
-        return self._impl.get()
+        return self.get()
 
-    def turn_on(self, **kwargs: Any) -> None:
+    @override
+    async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
-        self._impl.set(True)
+        self.set(True)
 
-    def turn_off(self, **kwargs: Any) -> None:
+    @override
+    async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
-        self._impl.set(False)
+        self.set(False)

@@ -1,45 +1,36 @@
-import pymodbus
 import asyncio
 
-# import serial
 from pymodbus.client import ModbusSerialClient as ModbusClient
 
 
-class Panel:  # TODO make underlying class capable of holding any registry to send and to receive
+class Recup:
     def __init__(self, cli: ModbusClient):
         self._addr = 1
         self._cli = cli
-        self._01 = 26
+        self._01 = 20
         self._02 = 24
         self._03 = 23
         self._04 = 22
         self._05 = 21
         self._ec = 0
-        return
 
     def set_01(self, temp: int):
         self._01 = temp
-        return
 
     def set_02(self, temp: int):
         self._02 = temp
-        return
 
     def set_03(self, temp: int):
         self._03 = temp
-        return
 
     def set_04(self, temp: int):
         self._04 = temp
-        return
 
     def set_05(self, temp: int):
         self._05 = temp
-        return
 
     def set_error(self, ec: str):
         self._ec = int(ec, 2)
-        return
 
     def send_regs(self) -> int:
         self._cli.write_register(258, self._ec, slave=self._addr)
@@ -64,7 +55,6 @@ class Panel:  # TODO make underlying class capable of holding any registry to se
             )
         except:
             print("ERROR")
-        return
 
 
 async def main():
@@ -73,14 +63,14 @@ async def main():
             port="/dev/pts/4", baudrate=9600, bytesize=8, parity="N", stopbits=1
         )
 
-        panel = Panel(cli)
+        recup = Recup(cli)
 
-        # panel.receive_holding_regs()
+        # recup.receive_holding_regs()
 
-        panel.set_error("00000010")
-        panel.send_regs()
+        recup.set_error("00000000")
+        recup.send_regs()
 
-        panel.receive_holding_regs()
+        recup.receive_holding_regs()
 
         cli.close()
         # await asyncio.sleep(10)
