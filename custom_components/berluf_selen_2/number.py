@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from berluf_selen_2.recup.funcs import Exhaust_fan, Fan_conv, Supply_fan
+from berluf_selen_2_ctrl.recup.funcs import Exhaust_fan, Fan_conv, Supply_fan
 from homeassistant.components.number import NumberEntity, NumberEntityDescription
 from homeassistant.const import PERCENTAGE
 

@@ -6,9 +6,9 @@ import asyncio
 import decimal
 from typing import TYPE_CHECKING, Any
 
-from berluf_selen_2.modbus_impl.asyncio.timer import Asyncio_timer_factory
-from berluf_selen_2.modbus_slave.intf import Device_async_intf
-from berluf_selen_2.recup.funcs import (
+from berluf_selen_2_ctrl.modbus_impl.asyncio.timer import Asyncio_timer_factory
+from berluf_selen_2_ctrl.modbus_slave.intf import Device_async_intf
+from berluf_selen_2_ctrl.recup.funcs import (
     Error,
     Thermometer_01,
     Thermometer_02,

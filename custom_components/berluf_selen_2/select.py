@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from berluf_selen_2.recup.funcs import Heater_cooler
+from berluf_selen_2_ctrl.recup.funcs import Heater_cooler
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 
 if TYPE_CHECKING:

@@ -5,16 +5,16 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING
 
-from berluf_selen_2.modbus_impl.pymodbus.serial import Pymodbus_serial_intf_factory
-from berluf_selen_2.modbus_slave.intf import Device_buildable_intf
-from berluf_selen_2.recup.device import Recup_device
-from berluf_selen_2.recup.funcs import (
+from berluf_selen_2_ctrl.modbus_impl.pymodbus.serial import Pymodbus_serial_intf_factory
+from berluf_selen_2_ctrl.modbus_slave.intf import Device_buildable_intf
+from berluf_selen_2_ctrl.recup.device import Recup_device
+from berluf_selen_2_ctrl.recup.funcs import (
     Fan_conv,
     Fan_linear_conv,
     Fan_non_conv,
     Recup_persistant,
 )
-from berluf_selen_2.recup.serial import Recup_serial_intf
+from berluf_selen_2_ctrl.recup.serial import Recup_serial_intf
 from homeassistant.const import CONF_PORT, Platform
 from homeassistant.helpers.storage import Store
 
