@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 # Underlying recuperator implementation
 from berluf_selen_2_ctrl.modbus_slave.intf import Device_async_intf
@@ -34,11 +34,13 @@ class SelenData:
         # Slave memory
         self._device = device
         # Timer that needs to be disabled while deleting integration; TODO set type
-        self._timer = None
+        self._timer: Any | None = None
         # Task running that needs to be disabled while deleting integration
         self._task: asyncio.Task | None = None
         # Fan speed conversion
         self._fan_conv: Fan_conv = fan_conv
+
+        self._connector: Any | None = None
 
         self._hass = hass
 
@@ -69,6 +71,17 @@ class SelenData:
         if self._task is not None:
             return self._task
         raise RuntimeError("Task hasn't been set yet.")
+
+    def set_connector(self, connector: Any):
+        if self._connector is None:
+            self._connector = connector
+        else:
+            raise RuntimeError("Connector has already been set.")
+
+    def get_connector(self):
+        if self._connector is not None:
+            return self._connector
+        raise RuntimeError("Connector hasn't been set yet.")
 
     def get_fan_conv(self):
         return self._fan_conv

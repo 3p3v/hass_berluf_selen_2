@@ -38,7 +38,7 @@ After the steps above, the integration is ready for setup.
 1. Search for and select `Berluf Selen 2`.
 1. In the integration configuration window, choose fan values conversion if needed:
     - `OFF` - default, no conversion is used (fan speed control works just as in the original touchpanel - fans start to rotate when set to minimum 10% speed),
-    - `LINEAR` - 0% of the fan speed correcponds to 9% in the original (max speed when no fan rotation is observed); 99% (max rotation) corresponds to 99% in the original (conversion via linear function, less precise, as calculated, non-integer values are converted to the nearest integer).
+    - `LINEAR` - 0% of the fan speed correcponds to 8% in the original (max speed when no fan rotation is observed); 99% (max rotation) corresponds to 99% in the original (conversion via linear function, less precise, as calculated, non-integer values are converted to the nearest integer).
 1. Select a type of a physical connection that will be used to connect to the recuperator, currently only `SERIAL` supported (e.g. RS485 to USB converter).
 1. Click `SUBMIT`.
 1. Type a name of the converter's serial port (e.g. "*/dev/ttyUSB1*").

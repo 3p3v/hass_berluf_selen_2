@@ -53,6 +53,7 @@ async def async_setup_entry(
             name="Selen connection status",
         ),
     )
+    entry.runtime_data.set_connector(conn_intf)
     entry.runtime_data.set_task(asyncio.ensure_future(conn_intf.connect()))
 
     async_add_entities(

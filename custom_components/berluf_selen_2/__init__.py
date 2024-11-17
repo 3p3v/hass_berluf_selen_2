@@ -101,14 +101,28 @@ async def async_unload_entry(
     entry: SelenConfigEntry,
 ) -> bool:
     """Handle removal of an entry."""
-    # Disconnect interface
-    await entry.runtime_data.get_intf().disconnect()
     try:
-        entry.runtime_data.get_timer().cancel()
-    except RuntimeError as ec:
-        LOGGER.warning(f"One of the extensions were not properly initiated: {ec}")
+        # Remove reconnecting task
+        task = entry.runtime_data.get_task()
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            # Disconnect
+            connector = entry.runtime_data.get_connector()
+            try:  # TODO(@3p3v): fix await error while disconnecting
+                await connector.disconnect()
+            except:
+                pass
+            # Cancel timeout timer
+            timer = entry.runtime_data.get_timer()
+            timer.cancel()
+            return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    except Exception as ec:
+        LOGGER.error(f"Error while deintiating: {ec}")
 
-    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    LOGGER.warning(f"One of the extensions were not properly deinitiated:")
+    return False
 
 
 async def async_reload_entry(

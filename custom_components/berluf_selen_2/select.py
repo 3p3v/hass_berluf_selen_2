@@ -49,7 +49,7 @@ class SelenHeaterCooler(SelectEntity, SelenEntry, Heater_cooler):
     ) -> None:
         """Initialize the sensor class."""
         SelectEntity.__init__(self)
-        SelenEntry.__init__(self, entry)
+        SelenEntry.__init__(self, entry, "heater_cooler")
         Heater_cooler.__init__(self, entry.runtime_data.get_device())
         self.entity_description = entity_description
 

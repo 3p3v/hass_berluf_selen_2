@@ -1,6 +1,6 @@
 import asyncio
 
-from pymodbus.client import ModbusSerialClient as ModbusClient
+from pymodbus_3p3v.client import ModbusSerialClient as ModbusClient
 
 
 class Recup:
