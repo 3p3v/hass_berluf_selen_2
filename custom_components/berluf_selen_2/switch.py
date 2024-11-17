@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, override
 
-from berluf_selen_2.recup.funcs import GWC
+from berluf_selen_2_ctrl.recup.funcs import GWC
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 
 if TYPE_CHECKING:

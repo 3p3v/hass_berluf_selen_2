@@ -6,9 +6,9 @@ import asyncio
 from typing import TYPE_CHECKING
 
 # Underlying recuperator implementation
-from berluf_selen_2.modbus_slave.intf import Device_async_intf
-from berluf_selen_2.recup.device import Recup_device
-from berluf_selen_2.recup.funcs import Fan_conv
+from berluf_selen_2_ctrl.modbus_slave.intf import Device_async_intf
+from berluf_selen_2_ctrl.recup.device import Recup_device
+from berluf_selen_2_ctrl.recup.funcs import Fan_conv
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry

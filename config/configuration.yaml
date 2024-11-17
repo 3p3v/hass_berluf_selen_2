@@ -9,4 +9,4 @@ homeassistant:
 logger:
   default: info
   logs:
-    custom_components.hass_berluf_selen_2: debug
+    custom_components.berluf_selen_2: debug

@@ -2,7 +2,7 @@ import asyncio
 import copy
 from typing import override
 
-from berluf_selen_2.modbus_slave.func import Persistant_executor
+from berluf_selen_2_ctrl.modbus_slave.func import Persistant_executor
 from homeassistant.helpers.storage import Store
 
 from .const import LOGGER

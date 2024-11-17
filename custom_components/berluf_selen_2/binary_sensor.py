@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from berluf_selen_2.recup.funcs import Bypass, Heater, Pump
+from berluf_selen_2_ctrl.recup.funcs import Bypass, Heater, Pump
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,

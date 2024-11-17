@@ -27,7 +27,7 @@ A converter has to be plugged in insted of the touchpanel.
 ### Install manually
 
 To install this integration manually, create a "custom_components" folder in the same directory, where "configuration.yaml" file is located.
-Finally copy the "[hass_berluf_selen_2](./custom_components/hass_berluf_selen_2)" folder from this repository to previously created "custom_components" directory.
+Finally copy the "[berluf_selen_2](./custom_components/berluf_selen_2)" folder from this repository to previously created "custom_components" directory.
 
 After the steps above, the integration is ready for setup.
 
