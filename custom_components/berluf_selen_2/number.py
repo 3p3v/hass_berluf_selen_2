@@ -78,8 +78,8 @@ class SelenSupplyFan(BaseFanEntity, SelenEntry, Supply_fan):
         self.entity_description = entity_description
 
         self._attr_native_value: float = float(self.get())
-        self._attr_native_max_value: float = 100.0
-        self._attr_native_min_value: float = 0.0
+        self._attr_native_max_value: float = float(self.get_max())
+        self._attr_native_min_value: float = float(self.get_min())
         self._attr_native_step: float = 1.0
         self._attr_native_unit_of_measurement = PERCENTAGE
 

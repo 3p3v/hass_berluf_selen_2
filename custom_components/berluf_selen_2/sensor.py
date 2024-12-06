@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import decimal
 from typing import TYPE_CHECKING, Any
 
-from berluf_selen_2_ctrl.modbus_impl.asyncio.timer import Asyncio_timer_factory
 from berluf_selen_2_ctrl.modbus_slave.intf import Device_async_intf
+from berluf_selen_2_ctrl.modbus_slave.timer import Timer_factory
 from berluf_selen_2_ctrl.recup.funcs import (
     Error,
     Thermometer_01,
@@ -21,6 +22,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
 )
 from homeassistant.const import UnitOfTemperature
+from .helpers.timer import HomeAssistantTimerFactory
 
 if TYPE_CHECKING:
     from .data import SelenConfigEntry
@@ -38,24 +40,6 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the sensor platform."""
-    timer = SelenError(
-        entry=entry,
-        entity_description=SensorEntityDescription(
-            key="berluf_selen_2",
-            name="Selen error indicator",
-        ),
-    )
-    entry.runtime_data.set_timer(timer)
-    conn_intf = SelenConnection(
-        entry=entry,
-        entity_description=SensorEntityDescription(
-            key="berluf_selen_2",
-            name="Selen connection status",
-        ),
-    )
-    entry.runtime_data.set_connector(conn_intf)
-    entry.runtime_data.set_task(asyncio.ensure_future(conn_intf.connect()))
-
     async_add_entities(
         [
             SelenThermometer(
@@ -76,8 +60,21 @@ async def async_setup_entry(
             ]
         ]
         + [
-            conn_intf,
-            timer,
+            SelenConnection(
+                entry=entry,
+                entity_description=SensorEntityDescription(
+                    key="berluf_selen_2",
+                    name="Selen connection status",
+                ),
+            ),
+            SelenError(
+                entry=entry,
+                entity_description=SensorEntityDescription(
+                    key="berluf_selen_2",
+                    name="Selen error indicator",
+                ),
+                timer_factory=HomeAssistantTimerFactory(1, hass),
+            ),
         ]
     )
 
@@ -150,15 +147,14 @@ class SelenError(SelenAsyncEntry, BaseErrorEntity):
         self,
         entry: SelenConfigEntry,
         entity_description: SensorEntityDescription,
+        timer_factory: Timer_factory,
     ) -> None:
         """Initialize the sensor class."""
         SelenAsyncEntry.__init__(self, entry, "error")
         BaseErrorEntity.__init__(self)
         self.entity_description = entity_description
 
-        self._impl = Error(
-            entry.runtime_data.get_device(), Asyncio_timer_factory(), self._callb
-        )
+        self._impl = Error(entry.runtime_data.get_device(), timer_factory, self._callb)
         self._ec: str = self._STATE_OK
 
     def _callb(self, ecs: list[Error.Error]) -> None:
@@ -186,6 +182,14 @@ class SelenError(SelenAsyncEntry, BaseErrorEntity):
         """Return the native value of the sensor."""
         return self._ec
 
+    async def async_added_to_hass(self) -> None:
+        """Start timer when hass was set up."""
+        self._impl.start()
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Stop timer when deleting entity."""
+        self._impl.cancel()
+
 
 class SelenConnection(SelenAsyncEntry, BaseErrorEntity):
     """berluf_selen_2 connection status."""
@@ -201,6 +205,7 @@ class SelenConnection(SelenAsyncEntry, BaseErrorEntity):
         self.entity_description = entity_description
 
         self._intf = entry.runtime_data.get_intf()
+        self._task: asyncio.Task | None = None
 
     async def connect(self) -> None:
         """Connect to the intefrace, reconnect on error, until shutdown."""
@@ -236,6 +241,20 @@ class SelenConnection(SelenAsyncEntry, BaseErrorEntity):
         """Disconnect from the interface."""
         await self._intf.disconnect()
         self.error_detected()
+
+    async def async_added_to_hass(self) -> None:
+        """Start server when hass was set up."""
+        self._task = asyncio.create_task(self.connect())
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Stop server when deleting entity."""
+        if self._task:
+            self._task.cancel()
+            with contextlib.suppress(asyncio.CancelledError):
+                await self._task
+
+        with contextlib.suppress(Exception):  # TODO(3p3v): Fix disconnecting error
+            await self.disconnect()
 
     @property
     def native_value(self) -> str:

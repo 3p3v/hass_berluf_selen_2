@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from typing import TYPE_CHECKING
 
 from berluf_selen_2_ctrl.modbus_impl.pymodbus.serial import Pymodbus_serial_intf_factory
@@ -86,9 +85,7 @@ async def async_setup_entry(
     Recup_persistant(device, persistant)
 
     # Save runtime data
-    entry.runtime_data = SelenData(
-        intf=intf, device=device, fan_conv=_get_conv(entry), hass=hass
-    )
+    entry.runtime_data = SelenData(intf=intf, device=device, fan_conv=_get_conv(entry))
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
@@ -101,28 +98,7 @@ async def async_unload_entry(
     entry: SelenConfigEntry,
 ) -> bool:
     """Handle removal of an entry."""
-    try:
-        # Remove reconnecting task
-        task = entry.runtime_data.get_task()
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            # Disconnect
-            connector = entry.runtime_data.get_connector()
-            try:  # TODO(@3p3v): fix await error while disconnecting
-                await connector.disconnect()
-            except:
-                pass
-            # Cancel timeout timer
-            timer = entry.runtime_data.get_timer()
-            timer.cancel()
-            return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    except Exception as ec:
-        LOGGER.error(f"Error while deintiating: {ec}")
-
-    LOGGER.warning(f"One of the extensions were not properly deinitiated:")
-    return False
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
 async def async_reload_entry(
