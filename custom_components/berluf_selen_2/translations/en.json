@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Conversion and interface type",
+                "description": "Setup conversion type (refer to help page if not sure what option is right for you).\n\nSetup connection type, which will be used to connect to the recuperator."
+            },
+            "serial": {
+                "title": "Serial port",
+                "description": "Choose serial port (e.g. '/dev/ttyUSB1'), on which the recuperator can be found.",
+                "data": {
+                    "port": "Serial port name"
+                }
+            }
+        }
+    },
+    "selector": {
+        "fans_conv": {
+            "options": {
+                "OFF": "OFF",
+                "LINEAR": "LINEAR"
+            }
+        },
+        "intf_type": {
+            "options": {
+                "SERIAL": "SERIAL"
+            }
+        }
+    }
+}

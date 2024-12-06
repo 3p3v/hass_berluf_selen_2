@@ -1,14 +1,12 @@
 """Home Assistant timer implementation for Berluf."""
 
 import asyncio
-
-from typing import Callable, override
-
-
-from homeassistant.core import HomeAssistant
+from collections.abc import Callable
+from typing import override
 
 from berluf_selen_2_ctrl.modbus_impl.asyncio.timer import Asyncio_interval_timer
 from berluf_selen_2_ctrl.modbus_slave.timer import Timer, Timer_factory
+from homeassistant.core import HomeAssistant
 
 
 class HomeAssistantTimer(Asyncio_interval_timer):

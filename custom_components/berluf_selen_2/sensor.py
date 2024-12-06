@@ -22,6 +22,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
 )
 from homeassistant.const import UnitOfTemperature
+
 from .helpers.timer import HomeAssistantTimerFactory
 
 if TYPE_CHECKING:
@@ -35,7 +36,7 @@ if TYPE_CHECKING:
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    hass: HomeAssistant,
     entry: SelenConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:

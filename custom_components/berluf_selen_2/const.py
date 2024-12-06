@@ -14,5 +14,6 @@ LAST_SET = "last_set"
 USER_MODE = "usr_mode"
 
 
-def get_default_store_name(entry_id: str):
+def get_default_store_name(entry_id: str) -> str:
+    """Get persistant storage name."""
     return entry_id + LAST_SET
